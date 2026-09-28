@@ -361,7 +361,7 @@ body.is-open .sky__glow {
   --ry: 0deg;
   --lift: 1;
   position: relative;
-  padding: 12px 12px 0;
+  padding: 12px 12px 48px;
   background: #fffdf9;
   border-radius: 6px;
   box-shadow:
@@ -451,15 +451,6 @@ body.is-open .sky__glow {
   background: rgba(255, 255, 255, .6);
 }
 
-.polaroid__caption {
-  min-height: 3.2rem;
-  padding: 8px 4px 10px;
-  text-align: center;
-  font-family: var(--font-hand);
-  font-size: 1.7rem;
-  line-height: 1.2;
-  color: var(--ink-soft);
-}
 
 /* ---------- 4. Стеклянная карточка с посланием ---------- */
 .glass {
@@ -521,13 +512,6 @@ body.is-open .sky__glow {
   transition: opacity .9s ease, transform 1s var(--ease-spring);
 }
 .signature.is-visible { opacity: 1; transform: rotate(-4deg); }
-.signature__dash { color: var(--ink-soft); font-weight: 500; }
-.signature__heart {
-  display: inline-block;
-  color: var(--accent);
-  font-size: .8em;
-  animation: heartbeat 1.7s ease-in-out infinite;
-}
 
 /* ---------- 5. Кнопка «Ещё раз обнять» ---------- */
 .hug {
