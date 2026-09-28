@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Настя, это тебе ❤️</title>
+  <meta name="description" content="Маленький сюрприз, чтобы тебе стало чуточку теплее.">
+  <meta name="theme-color" content="#1a1033">
+  <meta name="color-scheme" content="light dark">
+
+  <!-- Превью ссылки в мессенджерах -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Настя, это тебе ❤️">
+  <meta property="og:description" content="Открой, если тебе грустно.">
+  <meta property="og:locale" content="ru_RU">
+  <meta name="twitter:card" content="summary">
+
+  <!-- Иконка-сердечко прямо в data URI, без лишних файлов -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ff5d8f' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E">
+
+  <!-- Шрифты: Caveat (рукописный) + Nunito (мягкий). Оба с кириллицей. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Nunito:wght@400;600;700&display=swap&subset=cyrillic">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Общий градиент для всех сердечек в SVG (не display:none — иначе градиент не рисуется) -->
+  <svg class="svg-defs" aria-hidden="true" focusable="false" width="0" height="0">
+    <defs>
+      <linearGradient id="heart-gradient" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#ff9ac1"/>
+        <stop offset="55%" stop-color="#ff5d8f"/>
+        <stop offset="100%" stop-color="#e0306e"/>
+      </linearGradient>
+      <symbol id="heart-shape" viewBox="0 0 24 24">
+        <path fill="url(#heart-gradient)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- Фон: ночной и закатный слои плавно перетекают друг в друга (через opacity) -->
+  <div class="sky" aria-hidden="true">
+    <div class="sky__layer sky__layer--night"></div>
+    <div class="sky__layer sky__layer--sunset"></div>
+    <div class="sky__glow"></div>
+  </div>
+
+  <!-- Плавающие сердечки / лепестки / звёздочки -->
+  <canvas class="particles" id="particles" aria-hidden="true"></canvas>
+
+  <!-- 1. Стартовый экран -->
+  <section class="intro" id="intro" aria-label="Сюрприз">
+    <button class="heart-btn" id="heart-btn" type="button" aria-describedby="intro-hint">
+      <span class="heart-btn__glow" aria-hidden="true"></span>
+      <span class="heart-btn__ring" aria-hidden="true"></span>
+      <span class="heart" aria-hidden="true">
+        <svg class="heart__half heart__half--left" viewBox="0 0 24 24"><use href="#heart-shape"/></svg>
+        <svg class="heart__half heart__half--right" viewBox="0 0 24 24"><use href="#heart-shape"/></svg>
+      </span>
+      <span class="sr-only">Открыть сюрприз</span>
+    </button>
+    <p class="intro__hint" id="intro-hint" data-text="introHint">Нажми, если тебе грустно</p>
+    <span class="intro__burst" aria-hidden="true"></span>
+  </section>
+
+  <!-- 2–5. Основное содержимое, появляется после клика -->
+  <main class="letter" id="letter" hidden>
+    <header class="letter__header reveal">
+      <h1 class="letter__title" id="letter-title" tabindex="-1" data-text="title">Настя, это тебе ❤️, от Влада</h1>
+    </header>
+
+    <!-- Полароид с фото -->
+    <figure class="polaroid reveal" id="polaroid">
+      <div class="polaroid__inner" id="polaroid-inner">
+        <div class="polaroid__photo">
+          <img class="polaroid__img" id="photo" alt="" decoding="async" width="600" height="600">
+          <div class="polaroid__placeholder" id="photo-placeholder" hidden>
+            <span class="polaroid__placeholder-icon" aria-hidden="true">📷</span>
+            <span>Здесь будет наше фото</span>
+            <small>Положи файл в <code>assets/photo.jpg</code></small>
+          </div>
+          <span class="polaroid__sheen" aria-hidden="true"></span>
+        </div>
+        <figcaption class="polaroid__caption" data-text="photoCaption">мы 💕</figcaption>
+      </div>
+    </figure>
+
+    <!-- Послание в стеклянной карточке -->
+    <article class="glass message-card reveal" id="message-card" aria-labelledby="letter-title">
+      <!-- Полный текст для скринридеров; визуально печатается ниже -->
+      <p class="sr-only" id="message-full"></p>
+      <p class="message" id="message" aria-hidden="true"><span class="message__text" id="message-text"></span><span class="message__caret" id="message-caret"></span></p>
+      <p class="signature" id="signature"><span class="signature__dash" aria-hidden="true">—</span> <span data-text="signature">Влад</span> <span class="signature__heart" aria-hidden="true">♥</span></p>
+    </article>
+
+    <!-- Кнопка «обнять ещё раз» -->
+    <section class="hug" id="hug" aria-label="Обнимашки">
+      <button class="hug__btn" id="hug-btn" type="button" data-text="hugButton">Ещё раз обнять 🤗</button>
+      <p class="hug__phrase" id="hug-phrase" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <!-- Кнопка музыки: показывается, только если assets/music.mp3 существует -->
+  <button class="music-btn glass" id="music-btn" type="button" aria-pressed="false" aria-label="Включить музыку" hidden>
+    <span class="music-btn__icon" aria-hidden="true">♪</span>
+    <span class="music-btn__bars" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+
+  <!-- Конфетти и волна сердечек (поверх всего, не перехватывает клики) -->
+  <canvas class="fx" id="fx" aria-hidden="true"></canvas>
+
+  <noscript>
+    <p class="noscript">Включи JavaScript, чтобы открыть сюрприз ❤️</p>
+  </noscript>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
